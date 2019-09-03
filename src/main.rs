@@ -1,5 +1,7 @@
 use std::io::{self, BufRead};
 
+mod commandmanager;
+
 fn main(){
     let mut check = true;
 
