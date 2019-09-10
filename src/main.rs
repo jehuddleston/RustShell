@@ -2,14 +2,21 @@ use std::io::{self, BufRead,Write,stdout};
 
 mod commandmanager;
 use crate::commandmanager::CommandManager; 
+mod stringparser;
+use crate::stringparser::StringParser;
 
 fn reply(args:Vec<String>) -> String{
-    String::from("return")
+    let mut reply :String = String::new();
+    for s in args{
+        reply += &s;
+    }
+    reply
 }
 
 fn main(){
     let mut check = true;
     let mut cm = CommandManager::new();
+    let mut sp = StringParser::new(" ");
     cm.register("reply",reply);
     while check{
         print!(">>");
@@ -17,8 +24,11 @@ fn main(){
         let mut buffer = String::new();
         let stdin = io::stdin();
         stdin.lock().read_line(&mut buffer).unwrap();
-        println!("Read in {}", buffer);
-        if buffer == "quit\n"
+        let args = sp.parse_args(buffer);
+
+        let reply = cm.execute("reply",args);
+        println!("{}",reply);
+        if reply == String::from("quit\n")
         {check = false;}
     }
 }
